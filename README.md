@@ -1,1 +1,1 @@
-# hello-sycl
+# Hello SYCL
