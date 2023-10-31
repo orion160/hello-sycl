@@ -12,3 +12,4 @@ Setup a compliant compiler
 - ```icpx``` is the recommended default C++ driver for Linux 
 - ```icx``` is the recommended default driver for Windows
 
+For SYCL compilation use ```-fsycl```

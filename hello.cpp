@@ -3,23 +3,21 @@
 
 #include <sycl/sycl.hpp>
 
-const std::string secret{"Ifmmp-!xpsme\"\012J(n!tpssz-!Ebwf/!J(n!bgsbje!J!dbo(u!ep!uibu/!.!IBM\01"};
-	
-const auto sz = secret.size();
+int main(int argc, char **argv) {
+  std::string secret{"Ifmmp-!xpsme\"\012J(n!tpssz-!Ebwf/"
+                     "!J(n!bgsbje!J!dbo(u!ep!uibu/!.!IBM\01"};
 
-int main(int argc, char **argv)
-{
-    sycl::queue q;
+  sycl::queue q;
 
-    char *result = sycl::malloc_shared<char>(sz, q);
-    std::memcpy(result, secret.data(), sz);
+  {
+    sycl::buffer data{secret};
+    q.submit([&](sycl::handler &h) {
+      sycl::accessor s{data, h};
+      h.parallel_for(secret.size(), [=](auto &i) { s[i] -= 1; });
+    });
+  }
 
-    q.parallel_for(sz, [=](auto &i)
-                  { result[i] -= 1; })
-        .wait();
+  std::cout << secret << '\n';
 
-    std::cout << result << '\n';
-    sycl::free(result, q);
-
-    return 0;
+  return 0;
 }
